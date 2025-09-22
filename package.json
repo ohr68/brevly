@@ -1,0 +1,27 @@
+{
+  "name": "brevly-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prod": "node dist/infra/http/server.mjs",
+    "dev": "tsx watch --env-file .env src/infra/http/server.ts",
+    "build": "tsup-node"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.14.0",
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.4",
+    "@types/node": "^24.5.2",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "fastify": "^5.6.1",
+    "fastify-type-provider-zod": "^6.0.0",
+    "zod": "^4.1.11"
+  }
+}
