@@ -7,6 +7,6 @@ export const urls = pgTable('urls', {
     .$defaultFn(() => uuidv7()),
   originalUrl: text('orignal_url').notNull(),
   shortenedUrl: text('shortened_url').notNull().unique(),
-  accessCount: integer('access_count'),
+  accessCount: integer('access_count').notNull().default(0),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
