@@ -16,7 +16,7 @@ type DeleteUrlOutput = {
   id: string
 }
 
-export async function getOriginalUrl(
+export async function deletelUrl(
   input: DeleteUrlInput
 ): Promise<Either<UrlNotFound, DeleteUrlOutput>> {
   const { id } = deleteUrlInput.parse(input)

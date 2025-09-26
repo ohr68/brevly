@@ -7,7 +7,7 @@ import { findOne } from '@/shared/query-helper'
 import { UrlNotFound } from './errors/url-not-found'
 
 const getOriginalUrlInput = z.object({
-  shortenedUrl: z.string(),
+  shortenedUrl: z.url(),
 })
 
 type GetOriginalUrlInput = z.input<typeof getOriginalUrlInput>

@@ -8,6 +8,9 @@ import {
   validatorCompiler,
 } from 'fastify-type-provider-zod'
 import { env } from '@/env'
+import { getOriginalUrlRoute } from './routes/get-original-url'
+import { createShortenedUrlRoute } from './routes/create-shortened-url'
+import { incrementAccessCountRoute } from './routes/increment-access-count'
 
 const server = fastify()
 
@@ -41,6 +44,10 @@ server.register(fastifySwagger, {
 server.register(fastifySwaggerUi, {
   routePrefix: '/docs',
 })
+
+server.register(getOriginalUrlRoute)
+server.register(createShortenedUrlRoute)
+server.register(incrementAccessCountRoute)
 
 server.listen({ port: env.PORT, host: '0.0.0.0' }).then(() => {
   console.log('🚀 HTTP Server Running!!')

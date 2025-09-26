@@ -12,7 +12,7 @@ const incrementAccessCountInput = z.object({
 
 type IncrementAccessCountInput = z.input<typeof incrementAccessCountInput>
 
-export async function IncrementAccessCount(
+export async function incrementAccessCount(
   input: IncrementAccessCountInput
 ): Promise<Either<UrlNotFound, void>> {
   const { shortenedUrl } = incrementAccessCountInput.parse(input)
