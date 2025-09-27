@@ -70,14 +70,25 @@ export async function exportUrlsAccessed(
     uploadToStorageStream
   )
 
+  const fileName = `${new Date().toISOString()}-accessed-urls.csv`
+
   const uploadToStorage = uploadFileToStorage({
     contextType: 'text/csv',
     folder: 'downloads',
-    fileName: `${new Date().toISOString()}-accessed-urls.csv`,
+    fileName,
     contentStream: uploadToStorageStream,
   })
 
-  const [{ url }] = await Promise.all([uploadToStorage, convertToCsvPipeline])
+  const [{ key, url }] = await Promise.all([
+    uploadToStorage,
+    convertToCsvPipeline,
+  ])
+
+  await db.insert(schema.exported).values({
+    name: fileName,
+    remoteKey: key,
+    remoteUrl: url,
+  })
 
   return makeRight({ fileUrl: url })
 }

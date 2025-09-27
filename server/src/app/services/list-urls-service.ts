@@ -3,7 +3,7 @@ import { db } from '@/infra/db'
 import { schema } from '@/infra/db/schemas'
 import { type Either, makeRight } from '@/shared/either'
 
-type GetUrlsOutput = {
+type ListUrlsOutput = {
   urls: {
     id: string
     originalUrl: string
@@ -12,7 +12,7 @@ type GetUrlsOutput = {
   }[]
 }
 
-export async function getUrls(): Promise<Either<never, GetUrlsOutput>> {
+export async function listUrls(): Promise<Either<never, ListUrlsOutput>> {
   const urls = await db
     .select({
       id: schema.urls.id,
