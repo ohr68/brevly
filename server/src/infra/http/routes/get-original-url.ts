@@ -5,11 +5,14 @@ import { isRight, unwrapEither } from '@/shared/either'
 
 export const getOriginalUrlRoute: FastifyPluginAsyncZod = async server => {
   server.get(
-    '/original-url/:shortenedUrl',
+    '/url/original/:shortenedUrl',
     {
       schema: {
         summary: 'Get original URL',
         tags: ['urls'],
+        params: z.object({
+          shortenedUrl: z.url(),
+        }),
         response: {
           200: z.object({
             originalUrl: z.url(),
@@ -19,7 +22,7 @@ export const getOriginalUrlRoute: FastifyPluginAsyncZod = async server => {
       },
     },
     async (request, reply) => {
-      const { shortenedUrl } = request.params as { shortenedUrl: string }
+      const { shortenedUrl } = request.params
 
       const result = await getOriginalUrl({ shortenedUrl })
 

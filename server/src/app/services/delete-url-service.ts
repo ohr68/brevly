@@ -7,7 +7,7 @@ import { findOne } from '@/shared/query-helper'
 import { UrlNotFound } from './errors/url-not-found'
 
 const deleteUrlInput = z.object({
-  id: z.string(),
+  shortenedUrl: z.url(),
 })
 
 type DeleteUrlInput = z.input<typeof deleteUrlInput>
@@ -19,19 +19,21 @@ type DeleteUrlOutput = {
 export async function deletelUrl(
   input: DeleteUrlInput
 ): Promise<Either<UrlNotFound, DeleteUrlOutput>> {
-  const { id } = deleteUrlInput.parse(input)
+  const { shortenedUrl } = deleteUrlInput.parse(input)
 
   const result = await findOne(
     db
-      .select({ originalUrl: schema.urls.originalUrl })
+      .select({ id: schema.urls.id })
       .from(schema.urls)
-      .where(eq(schema.urls.id, id))
+      .where(eq(schema.urls.shortenedUrl, shortenedUrl))
       .limit(1)
   )
 
   if (!result) {
     return makeLeft(new UrlNotFound())
   }
+
+  const { id } = result
 
   await db.delete(schema.urls).where(eq(schema.urls.id, id))
 

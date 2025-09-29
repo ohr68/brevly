@@ -14,7 +14,7 @@ type IncrementAccessCountInput = z.input<typeof incrementAccessCountInput>
 
 export async function incrementAccessCount(
   input: IncrementAccessCountInput
-): Promise<Either<UrlNotFound, void>> {
+): Promise<Either<UrlNotFound, null>> {
   const { shortenedUrl } = incrementAccessCountInput.parse(input)
 
   const accessedUrl = await findOne(
@@ -36,5 +36,5 @@ export async function incrementAccessCount(
     .set({ accessCount: sql`${schema.urls.accessCount} + 1` })
     .where(eq(schema.urls.shortenedUrl, shortenedUrl))
 
-  return makeRight(undefined)
+  return makeRight(null)
 }

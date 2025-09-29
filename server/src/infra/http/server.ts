@@ -9,10 +9,12 @@ import {
 } from 'fastify-type-provider-zod'
 import { env } from '@/env'
 import { createShortenedUrlRoute } from './routes/create-shortened-url'
+import { deleteUrlRoute } from './routes/delete-url'
 import { exportUrlsAccessedRoute } from './routes/export-urls-accessed'
 import { getOriginalUrlRoute } from './routes/get-original-url'
 import { incrementAccessCountRoute } from './routes/increment-access-count'
 import { listUrlsRoute } from './routes/list-urls'
+import { transformSwaggerSchema } from './transform-swagger-schema'
 
 const server = fastify()
 
@@ -41,6 +43,7 @@ server.register(fastifySwagger, {
       version: '1.0.0',
     },
   },
+  transform: transformSwaggerSchema,
 })
 
 server.register(fastifySwaggerUi, {
@@ -52,6 +55,7 @@ server.register(createShortenedUrlRoute)
 server.register(incrementAccessCountRoute)
 server.register(listUrlsRoute)
 server.register(exportUrlsAccessedRoute)
+server.register(deleteUrlRoute)
 
 server.listen({ port: env.PORT, host: '0.0.0.0' }).then(() => {
   console.log('🚀 HTTP Server Running!!')

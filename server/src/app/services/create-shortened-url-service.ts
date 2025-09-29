@@ -15,6 +15,8 @@ const createShortenedUrlInput = z.object({
 
 type CreateShortenedUrlInput = z.input<typeof createShortenedUrlInput>
 
+const shortenedUrlSuffixRegex = /^[a-zA-Z0-9-]+$/
+
 export async function createShortenedUrl(
   input: CreateShortenedUrlInput
 ): Promise<Either<InvalidUrl | UrlAlreadyExists, { shortenedUrl: string }>> {
@@ -25,7 +27,13 @@ export async function createShortenedUrl(
   }
 
   const { originalUrl, shortenedUrlSuffix, baseUrl } = result.data
-  const shortenedUrl = `${baseUrl}/${shortenedUrlSuffix}`
+
+  if (!shortenedUrlSuffixRegex.test(shortenedUrlSuffix)) {
+    return makeLeft(new InvalidUrl())
+  }
+
+  const normalizedBaseUrl = baseUrl.replace(/\/+$/, '')
+  const shortenedUrl = `${normalizedBaseUrl}/${shortenedUrlSuffix}`
 
   const existingShortenedUrl = await findOne(
     db
@@ -33,7 +41,7 @@ export async function createShortenedUrl(
         id: schema.urls.id,
       })
       .from(schema.urls)
-      .where(eq(schema.urls.shortenedUrl, shortenedUrlSuffix))
+      .where(eq(schema.urls.shortenedUrl, shortenedUrl))
   )
 
   if (existingShortenedUrl) {

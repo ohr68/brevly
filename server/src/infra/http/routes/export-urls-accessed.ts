@@ -5,11 +5,11 @@ import { unwrapEither } from '@/shared/either'
 
 export const exportUrlsAccessedRoute: FastifyPluginAsyncZod = async server => {
   server.post(
-    '/export',
+    '/urls/exports',
     {
       schema: {
-        summary: 'Export accessed URLs',
-        tags: ['export'],
+        summary: 'Exports accessed URLs',
+        tags: ['exports'],
         querystring: z.object({
           searchQuery: z.string().optional(),
         }),
