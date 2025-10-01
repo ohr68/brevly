@@ -22,14 +22,24 @@ type NewLinkForm = z.infer<typeof newLinkForm>
 
 export function NewLink () {
   const queryClient = useQueryClient()
-  const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm<NewLinkForm>({
-    resolver: zodResolver(newLinkForm)
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting, errors },
+    reset
+  } = useForm<NewLinkForm>({
+    resolver: zodResolver(newLinkForm),
+    defaultValues: {
+      originalUrl: '',
+      shortenedUrlSuffix: ''
+    }
   })
 
   const { mutateAsync: registerNewLinkFn } = useMutation({
     mutationFn: createShortenedUrl,
     async onSuccess (data) {
-      updateLinksListOnCache(data)
+      addCreatedUrlToCache(data)
+      reset()
     }
   })
 
@@ -44,7 +54,7 @@ export function NewLink () {
     }
   }
 
-  function updateLinksListOnCache (createdUrl: CreateShortenedUrlOutput) {
+  function addCreatedUrlToCache (createdUrl: CreateShortenedUrlOutput) {
     const linksListCache = queryClient.getQueriesData<ListUrlsResponse>({
       queryKey: ['urls', 'list'],
     })

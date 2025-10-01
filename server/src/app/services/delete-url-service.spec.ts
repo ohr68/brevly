@@ -20,7 +20,7 @@ describe('delete URL', () => {
     expect(createdUrl.right?.shortenedUrl).toEqual(shortenedUrlSuffix)
 
     const sut = await deletelUrl({
-      shortenedUrl: createdUrl.right?.shortenedUrl ?? '',
+      shortenedUrlSuffix: createdUrl.right?.shortenedUrl ?? '',
     })
 
     expect(isRight(sut))
@@ -30,10 +30,10 @@ describe('delete URL', () => {
   })
 
   it('should return URL not found if URL not exists', async () => {
-    const shortenedUrl = `http://localhost:3333/${randomUUID()}`
+    const shortenedUrlSuffix = `http://localhost:3333/${randomUUID()}`
 
     const sut = await deletelUrl({
-      shortenedUrl,
+      shortenedUrlSuffix,
     })
 
     expect(isLeft(sut))

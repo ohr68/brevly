@@ -7,7 +7,9 @@ import LoadingSpinner from './ui/loading-spinner'
 export function LinksList () {
   const { data: result, isLoading: isLoadingLinks } = useQuery({
     queryKey: ['urls', 'list'],
-    queryFn: () => listUrls()
+    queryFn: () => listUrls(),
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
   })
 
   return (

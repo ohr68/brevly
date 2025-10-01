@@ -5,13 +5,13 @@ import { isRight, unwrapEither } from '@/shared/either'
 
 export const deleteUrlRoute: FastifyPluginAsyncZod = async server => {
   server.delete(
-    '/url/:shortenedUrl',
+    '/url/:shortenedUrlSuffix',
     {
       schema: {
         summary: 'Delete URL',
         tags: ['urls'],
         params: z.object({
-          shortenedUrl: z.string(),
+          shortenedUrlSuffix: z.string(),
         }),
         response: {
           200: z.object({
@@ -22,9 +22,9 @@ export const deleteUrlRoute: FastifyPluginAsyncZod = async server => {
       },
     },
     async (request, reply) => {
-      const { shortenedUrl } = request.params
+      const { shortenedUrlSuffix } = request.params
 
-      const result = await deletelUrl({ shortenedUrl })
+      const result = await deletelUrl({ shortenedUrlSuffix })
 
       if (isRight(result)) {
         const { id } = unwrapEither(result)

@@ -10,12 +10,16 @@ export function NotFound () {
       <div className='flex w-full justify-center py-4'>
         <h3 className='text-2xl text-[var(--gray-600)] font-bold'>Link não encontrado</h3>
       </div>
-      <div className='flex flex-col py-4'>
+      <div className='inline-block text-center py-4'>
         <span className='text-md text-[var(--gray-500)]'>
           O link que você está tentando acessar não existe, foi removido ou é uma url inválida.
           Saiba mais em
         </span>
-        <Link to='/' className='underline text-[var(--blue-base)] hover:text-[var(--blue-dark)]'>
+        <Link
+          to='/' className='font-semibold px-1
+                text-[var(--blue-base)]
+                hover:text-[var(--blue-dark)]'
+        >
           brev.ly
         </Link>
       </div>

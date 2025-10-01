@@ -3,6 +3,10 @@ import { CopyButton } from './ui/copy-button'
 import { DeleteButton } from './ui/delete-button'
 import { deleteUrl, type DeleteUrlOutput } from '@/api/delete-url'
 import { env } from '@/env'
+import { Link } from 'react-router-dom'
+import type { ListUrlsResponse } from '@/api/list-urls'
+import { incrementAccessCount } from '@/api/increment-access-count'
+import { toast } from 'sonner'
 
 export type LinkItemProps = {
   id: string
@@ -19,35 +23,83 @@ export function LinkItem ({ link }: { link: LinkItemProps }) {
   const { mutateAsync: deleteUrlFn, isPending: isDeletingUrl } = useMutation({
     mutationFn: deleteUrl,
     onSuccess: (data) => {
-      updateUrlOnCache(data)
+      deleteUrlOnCache(data)
     }
   })
 
-  function updateUrlOnCache (data: DeleteUrlOutput) {
-    const linksListCache = queryClient.getQueriesData<{ urls: LinkItemProps[] }>({
+  const { mutateAsync: incrementAccessCountFn } = useMutation({
+    mutationFn: incrementAccessCount,
+    onSuccess: (_data, variables: { shortenedUrl: string }) => {
+      updateAccessCountOnCache(variables.shortenedUrl)
+    }
+  })
+
+  function deleteUrlOnCache (data: DeleteUrlOutput) {
+    const linksListCache = queryClient.getQueriesData<ListUrlsResponse>({
       queryKey: ['urls', 'list'],
     })
 
     linksListCache.forEach(([cacheKey, cacheData]) => {
       if (!cacheData) return
 
-      queryClient.setQueryData(cacheKey, {
+      queryClient.setQueryData<ListUrlsResponse>(cacheKey, {
         ...cacheData,
         urls: cacheData.urls.filter(url => url.id !== data.id),
       })
     })
   }
 
+  function updateAccessCountOnCache (shortenedUrl: string) {
+    const linksListCache = queryClient.getQueriesData<ListUrlsResponse>({
+      queryKey: ['urls', 'list'],
+    })
+
+    linksListCache.forEach(([cacheKey, cacheData]) => {
+      if (!cacheData) return
+
+      queryClient.setQueryData<ListUrlsResponse>(cacheKey, {
+        ...cacheData,
+        urls: cacheData.urls.map(url =>
+          url.shortenedUrl === shortenedUrl
+            ? { ...url, accessCount: url.accessCount + 1 }
+            : url
+        ),
+      })
+    })
+  }
+
+  function handleRedirectClick (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    shortenedUrl: string,
+    incrementAccessCountFn: (params: { shortenedUrl: string }) => Promise<void>
+  ) {
+    e.preventDefault()
+    incrementAccessCountFn({ shortenedUrl })
+      .catch(err => {
+        toast.error('Falha ao contabilizar acesso',
+          {
+            description: 'Para mais informações sobre o erro, utlize a aba Console do navegador.'
+          })
+
+        console.error('Failed to increment access count', err)
+      })
+      .finally(() => {
+        window.open(`/${shortenedUrl}`, '_blank')
+      })
+  }
+
   return (
     <div className='flex flex-col border-b border-b-[var(--gray-200)] items-center justify-center mx-2'>
       <div className='flex w-full justify-between py-5'>
         <div className='flex flex-col'>
-          <a
-            href='#'
+          <Link
+            onClick={(e) => handleRedirectClick(e, link.shortenedUrl, incrementAccessCountFn)}
+            to={`/${link.shortenedUrl}`}
+            target='blank'
             className='text-md font-semibold text-[var(--blue-base)] hover:text-[var(--blue-dark)]'
           >
             {fullShortenedUrl}
-          </a>
+          </Link>
           <span className='text-sm text-[var(--gray-500)]'>{link.originalUrl}</span>
         </div>
 

@@ -6,13 +6,13 @@ import { isRight, unwrapEither } from '@/shared/either'
 export const incrementAccessCountRoute: FastifyPluginAsyncZod =
   async server => {
     server.patch(
-      '/url/:shortenedUrl',
+      '/url/:shortenedUrlSuffix',
       {
         schema: {
           summary: 'Increment URL access count',
           tags: ['urls'],
           params: z.object({
-            shortenedUrl: z.url(),
+            shortenedUrlSuffix: z.string(),
           }),
           response: {
             204: z.null(),
@@ -21,10 +21,10 @@ export const incrementAccessCountRoute: FastifyPluginAsyncZod =
         },
       },
       async (request, reply) => {
-        const { shortenedUrl } = request.params
+        const { shortenedUrlSuffix } = request.params
 
         const result = await incrementAccessCount({
-          shortenedUrlSuffix: shortenedUrl,
+          shortenedUrlSuffix,
         })
 
         if (isRight(result)) {
