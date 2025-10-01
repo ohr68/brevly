@@ -9,7 +9,10 @@ import { UrlAlreadyExists } from './errors/url-already-exists'
 
 const createShortenedUrlInput = z.object({
   originalUrl: z.url(),
-  shortenedUrl: z.url(),
+  shortenedUrlSuffix: z
+    .string()
+    .min(1)
+    .regex(/^[a-z0-9-]+$/),
 })
 
 type CreateShortenedUrlInput = z.input<typeof createShortenedUrlInput>
@@ -31,7 +34,7 @@ export async function createShortenedUrl(
     return makeLeft(new InvalidUrl())
   }
 
-  const { originalUrl, shortenedUrl } = result.data
+  const { originalUrl, shortenedUrlSuffix } = result.data
 
   const existingShortenedUrl = await findOne(
     db
@@ -39,7 +42,7 @@ export async function createShortenedUrl(
         id: schema.urls.id,
       })
       .from(schema.urls)
-      .where(eq(schema.urls.shortenedUrl, shortenedUrl))
+      .where(eq(schema.urls.shortenedUrl, shortenedUrlSuffix))
   )
 
   if (existingShortenedUrl) {
@@ -50,7 +53,7 @@ export async function createShortenedUrl(
     .insert(schema.urls)
     .values({
       originalUrl,
-      shortenedUrl,
+      shortenedUrl: shortenedUrlSuffix,
     })
     .returning({
       id: schema.urls.id,

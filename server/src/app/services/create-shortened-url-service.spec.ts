@@ -8,24 +8,24 @@ import { UrlAlreadyExists } from './errors/url-already-exists'
 describe('create a shortened URL', () => {
   it('should be able to create a valid shortened URL', async () => {
     const originalUrl = `https://site-${randomUUID()}.com`
-    const shortenedUrl = `http://localhost:3333/${randomUUID()}`
+    const shortenedUrlSuffix = randomUUID()
 
     const sut = await createShortenedUrl({
       originalUrl,
-      shortenedUrl,
+      shortenedUrlSuffix,
     })
 
     expect(isRight(sut))
-    expect(sut.right?.shortenedUrl).toEqual(shortenedUrl)
+    expect(sut.right?.shortenedUrl).toEqual(shortenedUrlSuffix)
   })
 
   it('should not be able to create an invalid shortened URL', async () => {
     const originalUrl = `https://site-${randomUUID()}.com`
-    const shortenedUrl = `not-a-valid-url`
+    const shortenedUrlSuffix = `Not-a-valid-url`
 
     const sut = await createShortenedUrl({
       originalUrl,
-      shortenedUrl,
+      shortenedUrlSuffix,
     })
 
     expect(isLeft(sut))
@@ -34,21 +34,21 @@ describe('create a shortened URL', () => {
 
   it('should not be able to create a shortened URL that already exists', async () => {
     const originalUrl = `https://site-${randomUUID()}.com`
-    const shortenedUrl = `http://localhost:3333/${randomUUID()}`
+    const shortenedUrlSuffix = randomUUID()
 
     const sut = await createShortenedUrl({
       originalUrl,
-      shortenedUrl,
+      shortenedUrlSuffix,
     })
 
     expect(isRight(sut))
-    expect(sut.right?.shortenedUrl).toEqual(shortenedUrl)
+    expect(sut.right?.shortenedUrl).toEqual(shortenedUrlSuffix)
 
     const anotherOriginalUrl = `https://another-site-${randomUUID()}.com`
 
     const secondUrlSut = await createShortenedUrl({
       originalUrl: anotherOriginalUrl,
-      shortenedUrl,
+      shortenedUrlSuffix,
     })
 
     expect(isLeft(secondUrlSut))

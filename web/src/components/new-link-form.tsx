@@ -1,5 +1,4 @@
 import { createShortenedUrl, type CreateShortenedUrlOutput } from '@/api/create-shortened-url'
-import { env } from '@/env'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
@@ -9,13 +8,13 @@ import { FormFieldError } from './ui/form-field-error'
 import type { ListUrlsResponse } from '@/api/list-urls'
 
 const newLinkForm = z.object({
-  originalUrl: z.url('URL inválida (precisa começar com http:// ou https://)'),
-  shortenedUrl: z
+  originalUrl: z.url('Informe uma url válida.'),
+  shortenedUrlSuffix: z
     .string()
     .min(1, 'O link encurtado é obrigatório')
     .regex(
-      /^[a-zA-Z0-9-]+$/,
-      'O link encurtado só pode conter letras, números e traços (-)'
+      /^[a-z0-9-]+$/,
+      'Informe uma url minúscula e sem espaço/caracter especial.'
     )
 })
 
@@ -38,7 +37,7 @@ export function NewLink () {
     try {
       await registerNewLinkFn({
         originalUrl: data.originalUrl,
-        shortenedUrl: `${env.VITE_FRONTEND_URL}/${data.shortenedUrl}`
+        shortenedUrlSuffix: data.shortenedUrlSuffix
       })
     } catch {
       toast.error('Erro ao cadastrar link.')
@@ -66,34 +65,54 @@ export function NewLink () {
 
       <form onSubmit={handleSubmit(handleNewLink)}>
         <div className='flex flex-col gap-4'>
-          <div>
-            <label htmlFor='originalUrl' className='text-xs text-[var(--gray-500)] uppercase block mb-2'>
+          <div className='group'>
+            <label
+              htmlFor='originalUrl'
+              className={`text-xs uppercase block mb-2
+                ${errors.originalUrl
+                  ? 'font-semibold text-[var(--danger)]'
+                  : 'text-[var(--gray-500)] group-focus-within:font-semibold group-focus-within:text-[var(--blue-base)]'}`}
+            >
               Link Original
             </label>
             <input
               type='text'
               id='originalUrl'
-              className='w-full border border-[var(--gray-200)] rounded-md py-2 px-3 text-[var(--gray-700)] placeholder-[var(--gray-400)] focus:outline-none'
+              className={`w-full rounded-md py-2 px-3 text-[var(--gray-600)]
+              placeholder-[var(--gray-400)] focus-within:outline-none 
+              focus:border-2 focus:border-[var(--blue-base)]
+              ${errors.originalUrl
+                ? 'border-2 border-[var(--danger)]'
+                : 'border border-[var(--gray-200)]'}`}
               placeholder='www.exemplo.com.br'
               {...register('originalUrl')}
             />
             {errors.originalUrl && (<FormFieldError message={errors.originalUrl.message ?? ''} />)}
           </div>
 
-          <div>
-            <label htmlFor='shortenedUrl' className='text-xs text-[var(--gray-500)] uppercase block mb-2'>
+          <div className='group'>
+            <label
+              htmlFor='shortenedUrlSuffix'
+              className={`text-xs uppercase block mb-2
+                ${errors.originalUrl
+                  ? 'font-semibold text-[var(--danger)]'
+                  : 'text-[var(--gray-500)] group-focus-within:font-semibold group-focus-within:text-[var(--blue-base)]'}`}
+            >
               Link Encurtado
             </label>
-            <div className='flex items-center border border-[var(--gray-200)] rounded-md overflow-hidden'>
+            <div className={`flex items-center rounded-md overflow-hidden
+               focus-within:border-2 focus-within:border-[var(--blue-base)] 
+               ${errors.shortenedUrlSuffix ? 'border-2 border-[var(--danger)]' : 'border border-[var(--gray-200)]'}`}
+            >
               <span className='pl-3 text-[var(--gray-400)]'>brev.ly/</span>
               <input
                 type='text'
-                id='shortenedUrl'
-                className='flex-1 py-2 text-[var(--gray-700)] placeholder-[var(--gray-400)] focus:outline-none'
-                {...register('shortenedUrl')}
+                id='shortenedUrlSuffix'
+                className='flex-1 py-2 text-[var(--gray-600)] placeholder-[var(--gray-400)] focus:outline-none'
+                {...register('shortenedUrlSuffix')}
               />
             </div>
-            {errors.shortenedUrl && (<FormFieldError message={errors.shortenedUrl.message ?? ''} />)}
+            {errors.shortenedUrlSuffix && (<FormFieldError message={errors.shortenedUrlSuffix.message ?? ''} />)}
           </div>
         </div>
 
@@ -104,7 +123,7 @@ export function NewLink () {
           disabled:opacity-50 disabled:cursor-not-allowed'
           disabled={isSubmitting}
         >
-          Salvar link
+          {isSubmitting ? 'Salvando...' : 'Salvar link'}
         </button>
       </form>
     </div>

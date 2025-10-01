@@ -8,21 +8,21 @@ import { incrementAccessCount } from './increment-access-count-service'
 describe('increment URL access count', () => {
   it('should be able to increment URL access count', async () => {
     const originalUrl = `https://site-${randomUUID()}.com`
-    const shortenedUrl = `http://localhost:3333/${randomUUID()}`
+    const shortenedUrlSuffix = randomUUID()
 
     const createdUrl = await createShortenedUrl({
       originalUrl,
-      shortenedUrl,
+      shortenedUrlSuffix,
     })
 
     expect(isRight(createdUrl))
 
     const createdShortenedUrl = createdUrl.right?.shortenedUrl
 
-    expect(createdShortenedUrl).toEqual(shortenedUrl)
+    expect(createdShortenedUrl).toEqual(shortenedUrlSuffix)
 
     const sut = await incrementAccessCount({
-      shortenedUrl: createdShortenedUrl ?? '',
+      shortenedUrlSuffix: createdShortenedUrl ?? '',
     })
 
     expect(isRight(sut))
@@ -34,7 +34,7 @@ describe('increment URL access count', () => {
     const baseUrl = 'http://localhost:3333'
     const shortenedUrl = `${baseUrl}/${shortenedUrlSuffix}`
 
-    const sut = await incrementAccessCount({ shortenedUrl })
+    const sut = await incrementAccessCount({ shortenedUrlSuffix: shortenedUrl })
 
     expect(isLeft(sut))
     expect(unwrapEither(sut)).toBeInstanceOf(UrlNotFound)

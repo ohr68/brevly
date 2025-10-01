@@ -11,7 +11,7 @@ export const deleteUrlRoute: FastifyPluginAsyncZod = async server => {
         summary: 'Delete URL',
         tags: ['urls'],
         params: z.object({
-          shortenedUrl: z.url(),
+          shortenedUrl: z.string(),
         }),
         response: {
           200: z.object({

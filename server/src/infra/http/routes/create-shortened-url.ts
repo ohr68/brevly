@@ -12,7 +12,7 @@ export const createShortenedUrlRoute: FastifyPluginAsyncZod = async server => {
         tags: ['urls'],
         body: z.object({
           originalUrl: z.url(),
-          shortenedUrl: z.url(),
+          shortenedUrlSuffix: z.string(),
         }),
         response: {
           201: z.object({
@@ -30,11 +30,11 @@ export const createShortenedUrlRoute: FastifyPluginAsyncZod = async server => {
       },
     },
     async (request, reply) => {
-      const { originalUrl, shortenedUrl } = request.body
+      const { originalUrl, shortenedUrlSuffix } = request.body
 
       const result = await createShortenedUrl({
         originalUrl,
-        shortenedUrl,
+        shortenedUrlSuffix,
       })
 
       if (isRight(result)) {

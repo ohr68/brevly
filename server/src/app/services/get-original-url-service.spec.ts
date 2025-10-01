@@ -8,17 +8,17 @@ import { getOriginalUrl } from './get-original-url-service'
 describe('get original URL', () => {
   it('should be able to get the original URL', async () => {
     const originalUrl = `https://site-${randomUUID()}.com`
-    const shortenedUrl = `http://localhost:3333/${randomUUID()}`
+    const shortenedUrlSuffix = randomUUID()
 
     const createdUrl = await createShortenedUrl({
       originalUrl,
-      shortenedUrl,
+      shortenedUrlSuffix,
     })
 
     expect(isRight(createdUrl))
-    expect(createdUrl.right?.shortenedUrl).toEqual(shortenedUrl)
+    expect(createdUrl.right?.shortenedUrl).toEqual(shortenedUrlSuffix)
 
-    const sut = await getOriginalUrl({ shortenedUrl })
+    const sut = await getOriginalUrl({ shortenedUrlSuffix })
 
     expect(isRight(sut))
     expect(unwrapEither(sut)).toEqual({
@@ -31,7 +31,7 @@ describe('get original URL', () => {
     const baseUrl = 'http://localhost:3333'
     const shortenedUrl = `${baseUrl}/${shortenedUrlSuffix}`
 
-    const sut = await getOriginalUrl({ shortenedUrl })
+    const sut = await getOriginalUrl({ shortenedUrlSuffix: shortenedUrl })
 
     expect(isLeft(sut))
     expect(unwrapEither(sut)).toBeInstanceOf(UrlNotFound)

@@ -7,7 +7,7 @@ import { findOne } from '@/shared/query-helper'
 import { UrlNotFound } from './errors/url-not-found'
 
 const getOriginalUrlInput = z.object({
-  shortenedUrl: z.url(),
+  shortenedUrlSuffix: z.string(),
 })
 
 type GetOriginalUrlInput = z.input<typeof getOriginalUrlInput>
@@ -19,7 +19,7 @@ type GetOriginalUrlOutput = {
 export async function getOriginalUrl(
   input: GetOriginalUrlInput
 ): Promise<Either<UrlNotFound, GetOriginalUrlOutput>> {
-  const { shortenedUrl } = getOriginalUrlInput.parse(input)
+  const { shortenedUrlSuffix: shortenedUrl } = getOriginalUrlInput.parse(input)
 
   const result = await findOne(
     db

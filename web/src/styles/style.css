@@ -42,3 +42,24 @@
     background-color: var(--blue-dark);
   }
   
+
+  .group.has-error label {
+    color: var(--danger);
+    font-weight: 600;
+  }
+  
+  .group.has-error .input {
+    border-color: var(--danger);
+    border-width: 2px;
+  }
+  
+  /* focus state when there is no error */
+  .group:not(.has-error):focus-within label {
+    color: var(--blue-base);
+    font-weight: 600;
+  }
+  
+  .group:not(.has-error):focus-within .input {
+    border-color: var(--blue-base);
+    border-width: 2px;
+  }

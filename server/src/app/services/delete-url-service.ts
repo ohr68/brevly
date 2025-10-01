@@ -7,7 +7,7 @@ import { findOne } from '@/shared/query-helper'
 import { UrlNotFound } from './errors/url-not-found'
 
 const deleteUrlInput = z.object({
-  shortenedUrl: z.url(),
+  shortenedUrl: z.string(),
 })
 
 type DeleteUrlInput = z.input<typeof deleteUrlInput>

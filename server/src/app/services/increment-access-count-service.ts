@@ -7,7 +7,7 @@ import { findOne } from '@/shared/query-helper'
 import { UrlNotFound } from './errors/url-not-found'
 
 const incrementAccessCountInput = z.object({
-  shortenedUrl: z.url(),
+  shortenedUrlSuffix: z.string(),
 })
 
 type IncrementAccessCountInput = z.input<typeof incrementAccessCountInput>
@@ -15,7 +15,8 @@ type IncrementAccessCountInput = z.input<typeof incrementAccessCountInput>
 export async function incrementAccessCount(
   input: IncrementAccessCountInput
 ): Promise<Either<UrlNotFound, null>> {
-  const { shortenedUrl } = incrementAccessCountInput.parse(input)
+  const { shortenedUrlSuffix: shortenedUrl } =
+    incrementAccessCountInput.parse(input)
 
   const accessedUrl = await findOne(
     db

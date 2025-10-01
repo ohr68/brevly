@@ -23,7 +23,9 @@ export const incrementAccessCountRoute: FastifyPluginAsyncZod =
       async (request, reply) => {
         const { shortenedUrl } = request.params
 
-        const result = await incrementAccessCount({ shortenedUrl })
+        const result = await incrementAccessCount({
+          shortenedUrlSuffix: shortenedUrl,
+        })
 
         if (isRight(result)) {
           return reply.status(204).send()

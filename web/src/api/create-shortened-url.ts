@@ -2,7 +2,7 @@ import { api } from '@/lib/axios'
 
 export interface CreateShortenedUrlParams {
   originalUrl: string
-  shortenedUrl: string
+  shortenedUrlSuffix: string
 }
 
 export interface CreateShortenedUrlOutput {
@@ -16,9 +16,9 @@ export interface CreateShortenedUrlOutput {
 export async function createShortenedUrl (
   {
     originalUrl,
-    shortenedUrl
+    shortenedUrlSuffix
   } : CreateShortenedUrlParams) : Promise<CreateShortenedUrlOutput> {
-  const result = await api.post<CreateShortenedUrlOutput>('/url', { originalUrl, shortenedUrl })
+  const result = await api.post<CreateShortenedUrlOutput>('/url', { originalUrl, shortenedUrlSuffix })
 
   return result.data
 }

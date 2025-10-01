@@ -24,7 +24,7 @@ export const getOriginalUrlRoute: FastifyPluginAsyncZod = async server => {
     async (request, reply) => {
       const { shortenedUrl } = request.params
 
-      const result = await getOriginalUrl({ shortenedUrl })
+      const result = await getOriginalUrl({ shortenedUrlSuffix: shortenedUrl })
 
       if (isRight(result)) {
         const { originalUrl } = unwrapEither(result)
