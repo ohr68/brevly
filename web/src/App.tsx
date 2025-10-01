@@ -6,10 +6,16 @@ import { router } from './routes'
 
 export function App () {
   return (
-    <div className='h-dvh flex flex-col items-center justify-center p-10'>
+    <div className='h-dvh w-full flex flex-col justify-center
+    sm:items-center
+    md:items-center
+    lg:items-center px-4 lg:p-10'
+    >
       <Toaster richColors />
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <div className='lg:w-auto'>
+          <RouterProvider router={router} />
+        </div>
       </QueryClientProvider>
     </div>
   )

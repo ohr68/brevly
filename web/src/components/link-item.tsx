@@ -89,32 +89,32 @@ export function LinkItem ({ link }: { link: LinkItemProps }) {
   }
 
   return (
-    <div className='flex flex-col border-b border-b-[var(--gray-200)] items-center justify-center mx-2'>
-      <div className='flex w-full justify-between py-5'>
-        <div className='flex flex-col'>
+    <div className='flex flex-col border-b border-b-[var(--gray-200)] items-stretch justify-center mx-2'>
+      <div className='flex w-full justify-between py-5 gap-4 flex-wrap'>
+        <div className='flex flex-col flex-1 min-w-0'>
           <Link
-            onClick={(e) => handleRedirectClick(e, link.shortenedUrl, incrementAccessCountFn)}
+            onClick={(e) =>
+              handleRedirectClick(e, link.shortenedUrl, incrementAccessCountFn)}
             to={`/${link.shortenedUrl}`}
-            target='blank'
-            className='text-md font-semibold text-[var(--blue-base)] hover:text-[var(--blue-dark)]'
+            target='_blank'
+            className='text-md font-semibold text-[var(--blue-base)] hover:text-[var(--blue-dark)] truncate'
+            title={fullShortenedUrl}
           >
             {fullShortenedUrl}
           </Link>
-          <span className='text-sm text-[var(--gray-500)]'>{link.originalUrl}</span>
+          <span className='text-sm text-[var(--gray-500)] truncate' title={link.originalUrl}>
+            {link.originalUrl}
+          </span>
         </div>
 
-        <div className='flex flex-row items-center'>
-          <div className='flex px-5'>
-            <span className='text-sm text-[var(--gray-500)]'>{link.accessCount} acessos</span>
-          </div>
-          <div className='flex gap-2'>
-            <CopyButton text={fullShortenedUrl} />
-            <DeleteButton
-              shortenedUrl={link.shortenedUrl}
-              isDeleting={isDeletingUrl}
-              onDelete={async (shortenedUrl) => await deleteUrlFn({ shortenedUrl })}
-            />
-          </div>
+        <div className='flex flex-row items-center flex-shrink-0 gap-2'>
+          <span className='text-sm text-[var(--gray-500)]'>{link.accessCount} acessos</span>
+          <CopyButton text={fullShortenedUrl} />
+          <DeleteButton
+            shortenedUrl={link.shortenedUrl}
+            isDeleting={isDeletingUrl}
+            onDelete={async (shortenedUrl) => await deleteUrlFn({ shortenedUrl })}
+          />
         </div>
       </div>
     </div>

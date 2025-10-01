@@ -70,7 +70,7 @@ export function NewLink () {
   }
 
   return (
-    <div className='w-full lg:w-[23.75rem] bg-[var(--white)] border border-[var(--gray-200)] rounded-xl px-8 py-10 flex-shrink-0'>
+    <div className='w-full bg-[var(--white)] border border-[var(--gray-200)] rounded-xl px-8 py-10 flex-shrink-0'>
       <h3 className='font-bold text-lg mb-4'>Novo link</h3>
 
       <form onSubmit={handleSubmit(handleNewLink)}>

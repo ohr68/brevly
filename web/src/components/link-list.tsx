@@ -14,7 +14,7 @@ export function LinksList () {
   })
 
   return (
-    <div className='w-full lg:w-[36.25rem] bg-[var(--white)] border border-[var(--gray-200)] rounded-xl px-8 py-6 flex flex-col max-h-[70vh]'>
+    <div className='w-full bg-[var(--white)] border border-[var(--gray-200)] rounded-xl px-8 py-6 flex flex-col max-h-[70vh]'>
       <div className='flex w-full justify-between items-center mb-2 flex-shrink-0'>
         <h3 className='font-bold text-[var(--gray-600)] text-lg'>Meus links</h3>
         <DownloadCsvButton
