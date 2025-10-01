@@ -48,6 +48,7 @@ export async function exportUrlsAccessed(
       { key: 'id', header: 'ID' },
       { key: 'original_url', header: 'Original URL' },
       { key: 'shortened_url', header: 'Shortened URL' },
+      { key: 'access_count', header: 'Access Count' },
       { key: 'created_at', header: 'Uploaded at' },
     ],
   })
@@ -73,7 +74,7 @@ export async function exportUrlsAccessed(
   const fileName = `${new Date().toISOString()}-accessed-urls.csv`
 
   const uploadToStorage = uploadFileToStorage({
-    contextType: 'text/csv',
+    contentType: 'text/csv',
     folder: 'downloads',
     fileName,
     contentStream: uploadToStorageStream,

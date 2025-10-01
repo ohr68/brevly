@@ -4,8 +4,8 @@ import { exportUrlsAccessed } from '@/app/services/export-urls-accessed-service'
 import { unwrapEither } from '@/shared/either'
 
 export const exportUrlsAccessedRoute: FastifyPluginAsyncZod = async server => {
-  server.post(
-    '/urls/exports',
+  server.get(
+    '/url/exports',
     {
       schema: {
         summary: 'Exports accessed URLs',

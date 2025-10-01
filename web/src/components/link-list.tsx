@@ -1,8 +1,9 @@
-import { DownloadSimpleIcon, LinkIcon } from '@phosphor-icons/react'
+import { LinkIcon } from '@phosphor-icons/react'
 import { LinkItem } from './link-item'
 import { useQuery } from '@tanstack/react-query'
 import { listUrls } from '@/api/list-urls'
 import LoadingSpinner from './ui/loading-spinner'
+import { DownloadCsvButton } from './ui/download-button'
 
 export function LinksList () {
   const { data: result, isLoading: isLoadingLinks } = useQuery({
@@ -16,13 +17,9 @@ export function LinksList () {
     <div className='w-full lg:w-[36.25rem] bg-[var(--white)] border border-[var(--gray-200)] rounded-xl px-8 py-6 flex flex-col max-h-[70vh]'>
       <div className='flex w-full justify-between items-center mb-2 flex-shrink-0'>
         <h3 className='font-bold text-[var(--gray-600)] text-lg'>Meus links</h3>
-        <button
-          className='flex items-center bg-[var(--gray-200)] rounded-md px-3 py-2 border border-transparent hover:cursor-pointer hover:enabled:border hover:enabled:border-[var(--blue-base)] disabled:opacity-50 disabled:cursor-not-allowed'
+        <DownloadCsvButton
           disabled={isLoadingLinks || !(result?.urls && result.urls.length > 0)}
-        >
-          <DownloadSimpleIcon width={16} height={16} className='text-[var(--gray-600)]' />
-          <span className='font-semibold text-sm text-[var(--gray-500)] ml-2'>Baixar CSV</span>
-        </button>
+        />
       </div>
 
       <hr className='border-t border-[var(--gray-200)] mb-2 flex-shrink-0' />

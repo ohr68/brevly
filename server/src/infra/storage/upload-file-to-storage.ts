@@ -7,7 +7,7 @@ import { env } from '@/env'
 import { r2 } from './client'
 
 const uploadFileToStorageInput = z.object({
-  folder: z.enum(['images', 'downloads']),
+  folder: z.enum(['files', 'downloads']),
   fileName: z.string(),
   contentType: z.string(),
   contentStream: z.instanceof(Readable),
