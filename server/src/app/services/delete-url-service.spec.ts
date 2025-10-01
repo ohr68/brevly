@@ -9,19 +9,15 @@ import { UrlNotFound } from './errors/url-not-found'
 describe('delete URL', () => {
   it('should be able to delete an existing URL', async () => {
     const originalUrl = `https://site-${randomUUID()}.com`
-    const shortenedUrlSuffix = randomUUID()
-    const baseUrl = 'http://localhost:3333'
+    const shortenedUrl = `http://localhost:3333/${randomUUID()}`
 
     const createdUrl = await createShortenedUrl({
       originalUrl,
-      shortenedUrlSuffix,
-      baseUrl,
+      shortenedUrl,
     })
 
     expect(isRight(createdUrl))
-    expect(unwrapEither(createdUrl)).toEqual({
-      shortenedUrl: `${baseUrl}/${shortenedUrlSuffix}`,
-    })
+    expect(createdUrl.right?.shortenedUrl).toEqual(shortenedUrl)
 
     const sut = await deletelUrl({
       shortenedUrl: createdUrl.right?.shortenedUrl ?? '',
@@ -34,9 +30,7 @@ describe('delete URL', () => {
   })
 
   it('should return URL not found if URL not exists', async () => {
-    const shortenedUrlSuffix = randomUUID()
-    const baseUrl = 'http://localhost:3333'
-    const shortenedUrl = `${baseUrl}/${shortenedUrlSuffix}`
+    const shortenedUrl = `http://localhost:3333/${randomUUID()}`
 
     const sut = await deletelUrl({
       shortenedUrl,

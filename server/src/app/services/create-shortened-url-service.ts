@@ -9,31 +9,29 @@ import { UrlAlreadyExists } from './errors/url-already-exists'
 
 const createShortenedUrlInput = z.object({
   originalUrl: z.url(),
-  shortenedUrlSuffix: z.string(),
-  baseUrl: z.url(),
+  shortenedUrl: z.url(),
 })
 
 type CreateShortenedUrlInput = z.input<typeof createShortenedUrlInput>
 
-const shortenedUrlSuffixRegex = /^[a-zA-Z0-9-]+$/
+type CreateShortenedUrlOutput = {
+  id: string
+  originalUrl: string
+  shortenedUrl: string
+  accessCount: number
+  createdAt: string
+}
 
 export async function createShortenedUrl(
   input: CreateShortenedUrlInput
-): Promise<Either<InvalidUrl | UrlAlreadyExists, { shortenedUrl: string }>> {
+): Promise<Either<InvalidUrl | UrlAlreadyExists, CreateShortenedUrlOutput>> {
   const result = createShortenedUrlInput.safeParse(input)
 
   if (!result.success) {
     return makeLeft(new InvalidUrl())
   }
 
-  const { originalUrl, shortenedUrlSuffix, baseUrl } = result.data
-
-  if (!shortenedUrlSuffixRegex.test(shortenedUrlSuffix)) {
-    return makeLeft(new InvalidUrl())
-  }
-
-  const normalizedBaseUrl = baseUrl.replace(/\/+$/, '')
-  const shortenedUrl = `${normalizedBaseUrl}/${shortenedUrlSuffix}`
+  const { originalUrl, shortenedUrl } = result.data
 
   const existingShortenedUrl = await findOne(
     db
@@ -48,10 +46,22 @@ export async function createShortenedUrl(
     return makeLeft(new UrlAlreadyExists())
   }
 
-  await db.insert(schema.urls).values({
-    originalUrl,
-    shortenedUrl,
-  })
+  const [createdUrl] = await db
+    .insert(schema.urls)
+    .values({
+      originalUrl,
+      shortenedUrl,
+    })
+    .returning({
+      id: schema.urls.id,
+      originalUrl: schema.urls.originalUrl,
+      shortenedUrl: schema.urls.shortenedUrl,
+      accessCount: schema.urls.accessCount,
+      createdAt: schema.urls.createdAt,
+    })
 
-  return makeRight({ shortenedUrl })
+  return makeRight({
+    ...createdUrl,
+    createdAt: createdUrl.createdAt.toISOString(),
+  })
 }

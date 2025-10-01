@@ -9,6 +9,7 @@ type ListUrlsOutput = {
     originalUrl: string
     shortenedUrl: string
     accessCount: number
+    createdAt: string
   }[]
 }
 
@@ -19,9 +20,15 @@ export async function listUrls(): Promise<Either<never, ListUrlsOutput>> {
       originalUrl: schema.urls.originalUrl,
       shortenedUrl: schema.urls.shortenedUrl,
       accessCount: schema.urls.accessCount,
+      createdAt: schema.urls.createdAt,
     })
     .from(schema.urls)
     .orderBy(desc(schema.urls.id))
 
-  return makeRight({ urls })
+  return makeRight({
+    urls: urls.map(u => ({
+      ...u,
+      createdAt: u.createdAt.toISOString(),
+    })),
+  })
 }

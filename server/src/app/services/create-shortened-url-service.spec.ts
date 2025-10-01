@@ -8,30 +8,24 @@ import { UrlAlreadyExists } from './errors/url-already-exists'
 describe('create a shortened URL', () => {
   it('should be able to create a valid shortened URL', async () => {
     const originalUrl = `https://site-${randomUUID()}.com`
-    const shortenedUrlSuffix = randomUUID()
-    const baseUrl = 'http://localhost:3333'
+    const shortenedUrl = `http://localhost:3333/${randomUUID()}`
 
     const sut = await createShortenedUrl({
       originalUrl,
-      shortenedUrlSuffix,
-      baseUrl,
+      shortenedUrl,
     })
 
     expect(isRight(sut))
-    expect(unwrapEither(sut)).toEqual({
-      shortenedUrl: `${baseUrl}/${shortenedUrlSuffix}`,
-    })
+    expect(sut.right?.shortenedUrl).toEqual(shortenedUrl)
   })
 
-  it('should not be able to create a shortened URL with invalid suffix', async () => {
+  it('should not be able to create an invalid shortened URL', async () => {
     const originalUrl = `https://site-${randomUUID()}.com`
-    const shortenedUrlSuffix = `/teste ${randomUUID()}`
-    const baseUrl = 'http://localhost:3333'
+    const shortenedUrl = `not-a-valid-url`
 
     const sut = await createShortenedUrl({
       originalUrl,
-      shortenedUrlSuffix,
-      baseUrl,
+      shortenedUrl,
     })
 
     expect(isLeft(sut))
@@ -40,26 +34,21 @@ describe('create a shortened URL', () => {
 
   it('should not be able to create a shortened URL that already exists', async () => {
     const originalUrl = `https://site-${randomUUID()}.com`
-    const shortenedUrlSuffix = randomUUID()
-    const baseUrl = 'http:localhost:3333'
+    const shortenedUrl = `http://localhost:3333/${randomUUID()}`
 
     const sut = await createShortenedUrl({
       originalUrl,
-      shortenedUrlSuffix,
-      baseUrl,
+      shortenedUrl,
     })
 
     expect(isRight(sut))
-    expect(unwrapEither(sut)).toEqual({
-      shortenedUrl: `${baseUrl}/${shortenedUrlSuffix}`,
-    })
+    expect(sut.right?.shortenedUrl).toEqual(shortenedUrl)
 
     const anotherOriginalUrl = `https://another-site-${randomUUID()}.com`
 
     const secondUrlSut = await createShortenedUrl({
       originalUrl: anotherOriginalUrl,
-      shortenedUrlSuffix,
-      baseUrl,
+      shortenedUrl,
     })
 
     expect(isLeft(secondUrlSut))

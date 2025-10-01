@@ -1,12 +1,14 @@
 import { CopyIcon, TrashIcon } from '@phosphor-icons/react'
 
-export type Link = {
-  shortUrl: string
+export type LinkItemProps = {
+  id: string
   originalUrl: string
+  shortenedUrl: string
   accessCount: number
+  createdAt: string
 }
 
-export function LinkItem ({ link }: { link: Link }) {
+export function LinkItem ({ link }: { link: LinkItemProps }) {
   return (
     <div className='flex flex-col border-b border-b-[var(--gray-200)] items-center justify-center mx-2'>
       <div className='flex w-full justify-between py-5'>
@@ -15,7 +17,7 @@ export function LinkItem ({ link }: { link: Link }) {
             href='#'
             className='text-md font-semibold text-[var(--blue-base)] hover:font-bold hover:text-[var(--blue-dark)]'
           >
-            {link.shortUrl}
+            {link.shortenedUrl}
           </a>
           <span className='text-sm text-[var(--gray-500)]'>{link.originalUrl}</span>
         </div>

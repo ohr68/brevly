@@ -18,6 +18,7 @@ export const listUrlsRoute: FastifyPluginAsyncZod = async server => {
                 originalUrl: z.string(),
                 shortenedUrl: z.string(),
                 accessCount: z.number(),
+                createdAt: z.string(),
               })
             ),
           }),
